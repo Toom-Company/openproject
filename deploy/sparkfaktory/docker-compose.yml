@@ -1,0 +1,109 @@
+# Sparkfaktory Proyectos — production stack.
+# Every name is explicit (project, volumes, network) so it can never pick up the volumes
+# of the previous test deployment (openproject_pgdata / openproject_opdata).
+name: sparkfaktory-proyectos
+
+x-restart: &restart
+  restart: unless-stopped
+
+x-app: &app
+  image: "${SF_IMAGE:?set SF_IMAGE in .env}"
+  <<: *restart
+  env_file: .env
+  environment:
+    RAILS_ENV: production
+    DATABASE_URL: "postgres://${POSTGRES_USER:-sparkfaktory}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@db/${POSTGRES_DB:-sparkfaktory_proyectos}?pool=${DB_POOL:-20}&encoding=unicode&reconnect=true"
+    OPENPROJECT_RAILS__CACHE__STORE: memcache
+    OPENPROJECT_CACHE__MEMCACHE__SERVER: "cache:11211"
+    OPENPROJECT_COLLABORATIVE__EDITING__HOCUSPOCUS__URL: ""
+  volumes:
+    - assets:/var/openproject/assets
+  networks:
+    - backend
+
+services:
+  db:
+    image: postgres:17
+    <<: *restart
+    stop_grace_period: 30s
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER:-sparkfaktory}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_DB:-sparkfaktory_proyectos}"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    mem_limit: "${SF_DB_MEM:-768m}"
+    networks:
+      - backend
+
+  cache:
+    image: memcached:1.6-alpine
+    <<: *restart
+    command: ["memcached", "-m", "64"]
+    mem_limit: 128m
+    networks:
+      - backend
+
+  # One-shot: runs pending migrations and the idempotent seed, then exits.
+  seeder:
+    <<: *app
+    command: ["./docker/prod/seeder"]
+    restart: on-failure
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    <<: *app
+    command: ["./docker/prod/web"]
+    ports:
+      - "${SF_BIND:-127.0.0.1:8090}:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_started
+      seeder:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/health_checks/default"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 120s
+    mem_limit: "${SF_WEB_MEM:-1800m}"
+
+  worker:
+    <<: *app
+    command: ["./docker/prod/worker"]
+    depends_on:
+      db:
+        condition: service_healthy
+      seeder:
+        condition: service_completed_successfully
+    mem_limit: "${SF_WORKER_MEM:-900m}"
+
+  cron:
+    <<: *app
+    command: ["./docker/prod/cron"]
+    depends_on:
+      db:
+        condition: service_healthy
+      seeder:
+        condition: service_completed_successfully
+    mem_limit: 600m
+
+volumes:
+  pgdata:
+    name: "${SF_VOLUME_PREFIX:-sparkfaktory_proyectos}_pgdata"
+  assets:
+    name: "${SF_VOLUME_PREFIX:-sparkfaktory_proyectos}_assets"
+
+networks:
+  backend:
+    name: "${SF_VOLUME_PREFIX:-sparkfaktory_proyectos}_backend"
