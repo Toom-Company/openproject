@@ -71,6 +71,8 @@ COPY ./docker/prod/setup/preinstall-build.sh ./docker/prod/setup/preinstall-buil
 RUN ./docker/prod/setup/preinstall-build.sh
 
 FROM build-base AS app-build
+# Keeps the Angular production build within a memory-capped builder on shared hosts.
+ENV NG_BUILD_MAX_WORKERS=1
 
 # stuff required for gems
 COPY Gemfile Gemfile.* .ruby-version ./
