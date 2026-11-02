@@ -1,0 +1,258 @@
+#-- copyright
+# OpenProject is an open source project management software.
+# Copyright (C) the OpenProject GmbH
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License version 3.
+#
+# OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
+# Copyright (C) 2006-2013 Jean-Philippe Lang
+# Copyright (C) 2010-2013 the ChiliProject Team
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#
+# See COPYRIGHT and LICENSE files for more details.
+#++
+
+# Sparkfaktory Proyectos seed data. Replaces app/seeders/standard.yml (see
+# OpenProject::Sparkfaktory::Patches::SeedDataLoaderPatch); app/seeders/common.yml
+# (colors, roles) and the modules' common.yml files are still merged in.
+#
+# Translations live under `seeds.sparkfaktory.*` in config/locales/{en,es}.yml.
+# Array entries are addressed by position (item_0, item_1, ...), so keep both in sync.
+
+priorities:
+  - reference: :default_priority_low
+    t_name: Low
+    color_name: cyan-1
+    position: 1
+  - reference: :default_priority_normal
+    t_name: Normal
+    color_name: blue-3
+    is_default: true
+    position: 2
+  - reference: :default_priority_high
+    t_name: High
+    color_name: yellow-7
+    position: 3
+  - reference: :default_priority_immediate
+    t_name: Urgent
+    color_name: grape-5
+    position: 4
+
+statuses:
+  - reference: :sf_status_todo
+    t_name: To do
+    color_name: cyan-7
+    default_done_ratio: 0
+    is_default: true
+    position: 1
+  - reference: :sf_status_in_progress
+    t_name: In progress
+    color_name: blue-5
+    default_done_ratio: 40
+    position: 2
+  - reference: :sf_status_blocked
+    t_name: Blocked
+    color_name: red-5
+    default_done_ratio: 0
+    position: 3
+  - reference: :sf_status_in_review
+    t_name: In review
+    color_name: violet-5
+    default_done_ratio: 80
+    position: 4
+  - reference: :sf_status_done
+    t_name: Done
+    color_name: green-5
+    default_done_ratio: 100
+    is_closed: true
+    position: 5
+
+types:
+  - reference: :default_type_task
+    t_name: Task
+    enabled_in_new_projects: true
+    color_name: :default_color_blue
+    is_in_roadmap: false
+    position: 1
+  - reference: :default_type_milestone
+    t_name: Milestone
+    enabled_in_new_projects: true
+    color_name: :default_color_green_light
+    is_milestone: true
+    is_in_roadmap: false
+    position: 2
+
+type_configuration:
+  - type: :default_type_task
+    form_configuration:
+      - group_name: :people
+        attributes:
+          - assignee
+      - group_name: :details
+        attributes:
+          - priority
+          - date
+          - category
+  - type: :default_type_milestone
+    form_configuration:
+      - group_name: :people
+        attributes:
+          - assignee
+      - group_name: :details
+        attributes:
+          - priority
+          - date
+
+workflows:
+  - type: :default_type_task
+    statuses:
+      - :sf_status_todo
+      - :sf_status_in_progress
+      - :sf_status_blocked
+      - :sf_status_in_review
+      - :sf_status_done
+  - type: :default_type_milestone
+    statuses:
+      - :sf_status_todo
+      - :sf_status_in_progress
+      - :sf_status_blocked
+      - :sf_status_in_review
+      - :sf_status_done
+
+project_custom_field_sections:
+  - reference: :default_project_attributes
+    t_name: Project details
+    position: 1
+
+projects:
+  sf-template:
+    t_name: "Template: standard project"
+    identifier: plantilla-proyecto
+    status_code: on_track
+    t_status_explanation: Copy this template to start a new project with the board, views and documentation already prepared.
+    t_description: |
+      Reusable template. Create new projects from it via "New project" > "Use template".
+    modules:
+      - work_package_tracking
+      - board_view
+      - calendar_view
+      - meetings
+      - activity
+    types:
+      - :default_type_task
+      - :default_type_milestone
+    queries:
+      - t_name: Open tasks
+        reference: :sf_template__query__open_tasks
+        status: open
+        hierarchy: true
+        sort_by: id
+        starred: true
+        columns:
+          - id
+          - subject
+          - status
+          - priority
+          - assigned_to
+          - due_date
+      - t_name: Milestones
+        reference: :sf_template__query__milestones
+        type: :default_type_milestone
+        sort_by: id
+        columns:
+          - id
+          - subject
+          - status
+          - due_date
+    boards:
+      kanban:
+        t_name: Kanban
+        statuses:
+          - :sf_status_todo
+          - :sf_status_in_progress
+          - :sf_status_blocked
+          - :sf_status_in_review
+          - :sf_status_done
+    t_wiki: |
+      # Project documentation
+
+      Use this wiki for procedures, decisions and internal rules of the project.
+
+      ## Suggested pages
+
+      * Goals and scope
+      * Working agreements
+      * Procedures and checklists
+      * Decisions log
+    # Dates are relative to the Monday of the current week.
+    work_packages:
+      - start: 0
+        t_subject: Kick-off meeting
+        type: :default_type_milestone
+        status: :sf_status_todo
+        duration: 1
+        schedule_manually: true
+      - start: 0
+        t_subject: Define goals and scope
+        reference: :sf_template__wp__scope
+        type: :default_type_task
+        status: :sf_status_todo
+        duration: 3
+        schedule_manually: true
+        t_description: Describe the expected result, deadlines and who takes part.
+        children:
+          - start: 0
+            t_subject: Collect requirements
+            type: :default_type_task
+            status: :sf_status_todo
+            duration: 2
+            schedule_manually: true
+      - start: 3
+        t_subject: Plan tasks and owners
+        type: :default_type_task
+        status: :sf_status_todo
+        duration: 2
+        schedule_manually: true
+        relations:
+          - to: :sf_template__wp__scope
+            type: follows
+    meeting_series:
+      - reference: :sf_template_weekly
+        t_title: Weekly follow-up
+        duration: 30
+        interval: 1
+        frequency: :weekly
+        time_zone: "Europe/Madrid"
+        author: :openproject_admin
+    meeting_agenda_items:
+      - t_title: Status of open tasks
+        meeting: :sf_template_weekly_template
+        author: :openproject_admin
+        duration: 15
+      - t_title: Blockers and agreements
+        meeting: :sf_template_weekly_template
+        author: :openproject_admin
+        duration: 15
+
+welcome:
+  t_title: "Welcome to Sparkfaktory Proyectos"
+  t_text: |
+    Organise projects, teams, tasks and meetings in one place.
+
+    * **My tasks** groups your work across all projects.
+    * Every project has a task list, a Kanban board, meetings and its own documentation.
+    * Start new projects from the template "Template: standard project".

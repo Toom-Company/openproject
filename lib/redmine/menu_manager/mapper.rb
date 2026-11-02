@@ -98,6 +98,19 @@ class Redmine::MenuManager::Mapper
     end
   end
 
+  def items
+    @menu_items.select { |node| node.is_a?(Redmine::MenuManager::MenuItem) }
+  end
+
+  # Moves the named top-level items to the front, in the given order.
+  def reorder(names)
+    names.filter_map { |name| @menu_items.children.find { |node| node.name == name } }
+         .each_with_index do |node, position|
+      @menu_items.remove!(node)
+      @menu_items.add_at(node, position)
+    end
+  end
+
   # Checks if a menu item exists
   def exists?(name)
     @menu_items.any? { |node| node.name == name }

@@ -1,0 +1,80 @@
+#-- copyright
+# OpenProject is an open source project management software.
+# Copyright (C) the OpenProject GmbH
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License version 3.
+#
+# OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
+# Copyright (C) 2006-2013 Jean-Philippe Lang
+# Copyright (C) 2010-2013 the ChiliProject Team
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#
+# See COPYRIGHT and LICENSE files for more details.
+#++
+
+en:
+  plugin_openproject_sparkfaktory:
+    name: "Sparkfaktory Proyectos"
+    description: "Branding, simplified navigation and disabled modules for Sparkfaktory Proyectos."
+  sparkfaktory:
+    menu:
+      my_tasks: "My tasks"
+      calendar: "Calendar"
+      meetings: "Meetings"
+      documentation: "Documentation"
+    queries:
+      my_tasks: "My tasks"
+      unassigned: "Unassigned"
+      due_soon: "Due soon"
+      blocked: "Blocked"
+    roles:
+      admin: "Administrator"
+      leader: "Leader"
+      member: "Member"
+    project_custom_fields:
+      start_date: "Start date"
+      end_date: "End date"
+    home:
+      work_summary:
+        title: "My work"
+        upcoming: "Upcoming deadlines"
+        no_upcoming: "No open tasks are due in the next days."
+        overdue_since: "overdue since %{date}"
+        counters:
+          my_tasks: "My open tasks"
+          my_overdue: "My overdue tasks"
+          blocked: "Blocked tasks"
+          due_soon: "Due within 7 days"
+      projects:
+        title: "Projects"
+        empty: "You are not a member of any project yet."
+        new: "New project"
+        view_all:
+          one: "View the project"
+          other: "View all %{count} projects"
+    project_overview:
+      tasks:
+        title: "Tasks"
+        empty: "This project has no tasks yet."
+        by_status: "By status"
+        by_assignee: "Open tasks by assignee"
+        unassigned: "Unassigned"
+        due_dates: "Deadlines"
+        overdue:
+          zero: "No overdue tasks"
+          one: "1 overdue task"
+          other: "%{count} overdue tasks"

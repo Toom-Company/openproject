@@ -46,4 +46,6 @@ group :opf_plugins do
   gem 'openproject-documents',                 path: 'modules/documents'
 
   gem 'openproject-bim',                       path: 'modules/bim'
+  # Must stay last: overrides menus, permissions and locales registered by the plugins above.
+  gem 'openproject-sparkfaktory',              path: 'modules/sparkfaktory'
 end

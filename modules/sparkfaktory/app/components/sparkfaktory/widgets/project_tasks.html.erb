@@ -1,0 +1,103 @@
+<%#-- copyright
+OpenProject is an open source project management software.
+Copyright (C) the OpenProject GmbH
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License version 3.
+
+OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
+Copyright (C) 2006-2013 Jean-Philippe Lang
+Copyright (C) 2010-2013 the ChiliProject Team
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+See COPYRIGHT and LICENSE files for more details.
+
+++#%>
+
+<%=
+  widget_wrapper do |container|
+    statuses = by_status
+
+    if statuses.empty?
+      container.with_body(classes: "op-widget-box--empty") do
+        render(Primer::Beta::Blankslate.new(test_selector: "sf-project-tasks-empty")) do |component|
+          component.with_visual_icon(icon: :tasklist)
+          component.with_heading(tag: :h3).with_content(t("sparkfaktory.project_overview.tasks.empty"))
+        end
+      end
+    else
+      container.with_row do
+        render(Primer::Beta::Heading.new(tag: :h3, font_size: 5, mb: 2)) { t("sparkfaktory.project_overview.tasks.by_status") }
+      end
+      container.with_row(test_selector: "sf-project-tasks-by-status") do
+        content_tag(:ul, class: "sf-work-summary--counters") do
+          safe_join(statuses.map do |status, count|
+            content_tag(:li) do
+              render(Primer::Beta::Link.new(href: status_path(status), underline: false, classes: "sf-work-summary--counter")) do
+                safe_join([content_tag(:span, count, class: "sf-work-summary--count"),
+                           content_tag(:span, status.name, class: "sf-work-summary--label")])
+              end
+            end
+          end)
+        end
+      end
+
+      container.with_row do
+        render(Primer::Beta::Heading.new(tag: :h3, font_size: 5, mb: 2)) { t("sparkfaktory.project_overview.tasks.by_assignee") }
+      end
+      by_assignee.each do |principal, count|
+        container.with_row(test_selector: "sf-project-tasks-assignee") do
+          helpers.flex_layout(justify_content: :space_between) do |row|
+            row.with_column do
+              render(Primer::Beta::Link.new(href: assignee_path(principal))) do
+                principal ? principal.name : t("sparkfaktory.project_overview.tasks.unassigned")
+              end
+            end
+            row.with_column { render(Primer::Beta::Counter.new(count:, hide_if_zero: false)) }
+          end
+        end
+      end
+
+      container.with_row do
+        helpers.flex_layout(justify_content: :space_between, align_items: :center) do |row|
+          row.with_column do
+            render(Primer::Beta::Heading.new(tag: :h3, font_size: 5)) { t("sparkfaktory.project_overview.tasks.due_dates") }
+          end
+          row.with_column do
+            render(Primer::Beta::Link.new(href: overdue_path, scheme: overdue_count.positive? ? :primary : :secondary,
+                                          test_selector: "sf-project-tasks-overdue")) do
+              t("sparkfaktory.project_overview.tasks.overdue", count: overdue_count)
+            end
+          end
+        end
+      end
+      upcoming.each do |work_package|
+        container.with_row(test_selector: "sf-project-tasks-upcoming") do
+          helpers.flex_layout(justify_content: :space_between, flex_wrap: :wrap) do |row|
+            row.with_column(mr: 2) do
+              render(Primer::Beta::Link.new(href: helpers.work_package_path(work_package))) { work_package.subject }
+            end
+            row.with_column do
+              render(Primer::Beta::Text.new(color: work_package.due_date < Date.current ? :danger : :subtle, font_size: :small)) do
+                "#{work_package.assigned_to&.name || t('sparkfaktory.project_overview.tasks.unassigned')} · #{helpers.format_date(work_package.due_date)}"
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+%>

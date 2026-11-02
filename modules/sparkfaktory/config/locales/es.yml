@@ -1,0 +1,80 @@
+#-- copyright
+# OpenProject is an open source project management software.
+# Copyright (C) the OpenProject GmbH
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License version 3.
+#
+# OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
+# Copyright (C) 2006-2013 Jean-Philippe Lang
+# Copyright (C) 2010-2013 the ChiliProject Team
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#
+# See COPYRIGHT and LICENSE files for more details.
+#++
+
+es:
+  plugin_openproject_sparkfaktory:
+    name: "Sparkfaktory Proyectos"
+    description: "Identidad, navegación simplificada y módulos desactivados para Sparkfaktory Proyectos."
+  sparkfaktory:
+    menu:
+      my_tasks: "Mis tareas"
+      calendar: "Calendario"
+      meetings: "Reuniones"
+      documentation: "Documentación"
+    queries:
+      my_tasks: "Mis tareas"
+      unassigned: "Sin asignar"
+      due_soon: "Próximas a vencer"
+      blocked: "Bloqueadas"
+    roles:
+      admin: "Administrador"
+      leader: "Líder"
+      member: "Miembro"
+    project_custom_fields:
+      start_date: "Fecha de inicio"
+      end_date: "Fecha de fin"
+    home:
+      work_summary:
+        title: "Mi trabajo"
+        upcoming: "Próximas entregas"
+        no_upcoming: "No hay tareas abiertas que venzan en los próximos días."
+        overdue_since: "vencida desde %{date}"
+        counters:
+          my_tasks: "Mis tareas abiertas"
+          my_overdue: "Mis tareas vencidas"
+          blocked: "Tareas bloqueadas"
+          due_soon: "Vencen en 7 días"
+      projects:
+        title: "Proyectos"
+        empty: "Todavía no participas en ningún proyecto."
+        new: "Nuevo proyecto"
+        view_all:
+          one: "Ver el proyecto"
+          other: "Ver los %{count} proyectos"
+    project_overview:
+      tasks:
+        title: "Tareas"
+        empty: "Este proyecto todavía no tiene tareas."
+        by_status: "Por estado"
+        by_assignee: "Tareas abiertas por responsable"
+        unassigned: "Sin asignar"
+        due_dates: "Vencimientos"
+        overdue:
+          zero: "Sin tareas vencidas"
+          one: "1 tarea vencida"
+          other: "%{count} tareas vencidas"

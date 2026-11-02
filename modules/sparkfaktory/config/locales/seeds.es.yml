@@ -1,0 +1,111 @@
+#-- copyright
+# OpenProject is an open source project management software.
+# Copyright (C) the OpenProject GmbH
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License version 3.
+#
+# OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
+# Copyright (C) 2006-2013 Jean-Philippe Lang
+# Copyright (C) 2010-2013 the ChiliProject Team
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#
+# See COPYRIGHT and LICENSE files for more details.
+#++
+
+es:
+  seeds:
+    sparkfaktory:
+      priorities:
+        item_0:
+          name: Baja
+        item_1:
+          name: Normal
+        item_2:
+          name: Alta
+        item_3:
+          name: Urgente
+      statuses:
+        item_0:
+          name: Pendiente
+        item_1:
+          name: En progreso
+        item_2:
+          name: Bloqueada
+        item_3:
+          name: En revisión
+        item_4:
+          name: Completada
+      types:
+        item_0:
+          name: Tarea
+        item_1:
+          name: Hito
+      project_custom_field_sections:
+        item_0:
+          name: Datos del proyecto
+      projects:
+        sf-template:
+          name: "Plantilla: proyecto estándar"
+          status_explanation: Copia esta plantilla para empezar un proyecto con el tablero, las vistas y la documentación ya preparados.
+          description: |
+            Plantilla reutilizable. Crea proyectos nuevos desde «Nuevo proyecto» > «Usar plantilla».
+          queries:
+            item_0:
+              name: Tareas abiertas
+            item_1:
+              name: Hitos
+          boards:
+            kanban:
+              name: Kanban
+          wiki: |
+            # Documentación del proyecto
+
+            Usa esta wiki para procedimientos, decisiones y normas internas del proyecto.
+
+            ## Páginas sugeridas
+
+            * Objetivos y alcance
+            * Acuerdos de trabajo
+            * Procedimientos y listas de comprobación
+            * Registro de decisiones
+          work_packages:
+            item_0:
+              subject: Reunión de arranque
+            item_1:
+              subject: Definir objetivos y alcance
+              description: Describe el resultado esperado, los plazos y quién participa.
+              children:
+                item_0:
+                  subject: Recoger requisitos
+            item_2:
+              subject: Planificar tareas y responsables
+          meeting_series:
+            item_0:
+              title: Seguimiento semanal
+          meeting_agenda_items:
+            item_0:
+              title: Estado de las tareas abiertas
+            item_1:
+              title: Bloqueos y acuerdos
+      welcome:
+        title: "Bienvenido a Sparkfaktory Proyectos"
+        text: |
+          Organiza proyectos, equipos, tareas y reuniones en un solo lugar.
+
+          * **Mis tareas** agrupa tu trabajo de todos los proyectos.
+          * Cada proyecto tiene lista de tareas, tablero Kanban, reuniones y su propia documentación.
+          * Empieza los proyectos nuevos desde la plantilla «Plantilla: proyecto estándar».

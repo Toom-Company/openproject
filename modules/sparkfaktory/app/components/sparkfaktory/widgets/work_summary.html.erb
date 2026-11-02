@@ -1,0 +1,83 @@
+<%#-- copyright
+OpenProject is an open source project management software.
+Copyright (C) the OpenProject GmbH
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License version 3.
+
+OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
+Copyright (C) 2006-2013 Jean-Philippe Lang
+Copyright (C) 2010-2013 the ChiliProject Team
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+See COPYRIGHT and LICENSE files for more details.
+
+++#%>
+
+<%=
+  widget_wrapper do |container|
+    container.with_row do
+      content_tag(:ul, class: "sf-work-summary--counters", data: { "test-selector": "sf-work-summary-counters" }) do
+        safe_join(
+          counters.map do |counter|
+            content_tag(:li) do
+              render(Primer::Beta::Link.new(href: counter_path(counter.key), scheme: :primary, underline: false,
+                                            classes: "sf-work-summary--counter",
+                                            data: { "test-selector": "sf-counter-#{counter.key}" })) do
+                safe_join([
+                  content_tag(:span, counter.count, class: "sf-work-summary--count"),
+                  content_tag(:span, t("sparkfaktory.home.work_summary.counters.#{counter.key}"),
+                              class: "sf-work-summary--label")
+                ])
+              end
+            end
+          end
+        )
+      end
+    end
+
+    container.with_row do
+      render(Primer::Beta::Heading.new(tag: :h3, font_size: 5, mb: 2)) { t("sparkfaktory.home.work_summary.upcoming") }
+    end
+
+    if upcoming.empty?
+      container.with_row(test_selector: "sf-upcoming-empty") do
+        render(Primer::Beta::Text.new(color: :subtle)) { t("sparkfaktory.home.work_summary.no_upcoming") }
+      end
+    else
+      upcoming.each do |work_package|
+        container.with_row(test_selector: "sf-upcoming-item") do
+          helpers.flex_layout(justify_content: :space_between, flex_wrap: :wrap) do |row|
+            row.with_column(mr: 2) do
+              safe_join([
+                render(Primer::Beta::Link.new(href: helpers.work_package_path(work_package), font_weight: :bold)) do
+                  work_package.subject
+                end,
+                render(Primer::Beta::Text.new(color: :subtle, font_size: :small, ml: 1)) { work_package.project.name }
+              ])
+            end
+            row.with_column do
+              render(Primer::Beta::Text.new(color: work_package.due_date < Date.current ? :danger : :subtle,
+                                            font_size: :small)) do
+                "#{work_package.status.name} · #{due_label(work_package)}"
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+%>
