@@ -9,8 +9,14 @@ else
   echo "Assets need to be compiled"
   JOBS=8 npm install
 
-  SECRET_KEY_BASE="$(openssl rand -hex 64)" RAILS_ENV=production DATABASE_URL=nulldb://db \
-    bin/rails openproject:plugins:register_frontend assets:precompile
+  export SECRET_KEY_BASE="$(openssl rand -hex 64)" RAILS_ENV=production DATABASE_URL=nulldb://db
+
+  # Angular runs without a Rails process alive next to it so the build fits in
+  # memory-capped builders on shared hosts.
+  bin/rails openproject:plugins:register_frontend assets:export_locales
+  (cd frontend && npm run build)
+  bin/rails assets:rebuild_manifest
+  RECOMPILE_RAILS_ASSETS=true bin/rails assets:precompile
 
   if [ "$DOCKER" = "1" ]; then
     rm -rf /tmp/nulldb
