@@ -1,0 +1,5 @@
+# Fast update for changes limited to modules/sparkfaktory Ruby/ERB/locale files.
+# Not valid for frontend, Gemfile or migration changes: rebuild with docker/prod/Dockerfile then.
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+COPY --chown=app:app modules/sparkfaktory /app/modules/sparkfaktory

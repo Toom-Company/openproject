@@ -40,8 +40,10 @@ module OpenProject::Sparkfaktory
         settings_repository settings_time_and_costs settings_versions
       ],
       admin_menu: %i[
-        admin_costs cost_types costs_settings custom_actions external_file_storages placeholder_users
-        plugin_webhooks project_phase_definitions_settings time_entry_activities
+        admin_backlogs admin_costs admin_integrations ai cost_types costs_settings custom_actions documents
+        document_categories external_file_storages import placeholder_users plugin_ldap_departments plugin_ldap_groups
+        plugin_openid_connect plugin_saml plugin_webhooks project_phase_definitions_settings scim_clients
+        settings_repositories time_entry_activities wiki_providers
       ],
       work_package_split_view: %i[github gitlab]
     }.freeze
@@ -53,14 +55,39 @@ module OpenProject::Sparkfaktory
     def register!
       HIDDEN_ITEMS.each do |menu_name, item_names|
         Redmine::MenuManager.map(menu_name) do |menu|
-          item_names.each { |name| menu.delete(name) }
+          item_names.each { |name| remove(menu, name) }
           hide_unlicensed_enterprise_items(menu)
         end
       end
 
+      Redmine::MenuManager.map(:admin_menu) { |menu| point_parents_to_first_child(menu) }
+
       Redmine::MenuManager.map(:global_menu) { |menu| customize_global_menu(menu) }
       Redmine::MenuManager.map(:top_menu) { |menu| customize_top_menu(menu) }
       Redmine::MenuManager.map(:project_menu) { |menu| menu.reorder(PROJECT_ORDER) }
+    end
+
+    # Mapper#delete only detaches direct children of the root; nested entries need their parent.
+    def remove(menu, name)
+      while (item = menu.find(name))&.parent
+        item.parent.remove!(item)
+      end
+    end
+
+    # Admin section entries link to the page of their first child, which may have been removed.
+    def point_parents_to_first_child(menu)
+      menu.items.select { |item| item.children.any? }.each do |parent|
+        next unless OpenProject::Sparkfaktory::DisabledRoutes.disabled?(url_path(parent.url))
+
+        replacement = parent.children.find { |child| !OpenProject::Sparkfaktory::DisabledRoutes.disabled?(url_path(child.url)) }
+        replacement ? parent.url = replacement.url : remove(menu, parent.name)
+      end
+    end
+
+    def url_path(url)
+      url.is_a?(Hash) ? Rails.application.routes.url_helpers.url_for(url.merge(only_path: true)) : url.to_s
+    rescue ActionController::UrlGenerationError
+      url.to_s
     end
 
     # Menu entries for Enterprise features would otherwise render as upsell links.
