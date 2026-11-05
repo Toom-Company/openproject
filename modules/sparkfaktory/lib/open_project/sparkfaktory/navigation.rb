@@ -48,7 +48,7 @@ module OpenProject::Sparkfaktory
       work_package_split_view: %i[github gitlab]
     }.freeze
 
-    GLOBAL_ORDER = %i[home work_packages projects calendar_view meetings wikis administration].freeze
+    GLOBAL_ORDER = %i[home work_packages projects sparkfaktory_team calendar_view meetings wikis administration].freeze
 
     PROJECT_ORDER = %i[overview work_packages boards calendar_view meetings wiki members settings].freeze
 
@@ -106,6 +106,8 @@ module OpenProject::Sparkfaktory
       rename(menu, :meetings, :"sparkfaktory.menu.meetings")
       rename(menu, :wikis, :"sparkfaktory.menu.documentation")
 
+      push_team(menu)
+
       menu.push :administration,
                 { controller: "/admin", action: "index" },
                 caption: :label_administration,
@@ -117,9 +119,22 @@ module OpenProject::Sparkfaktory
 
     def customize_top_menu(menu)
       configure_my_tasks(menu.find(:work_packages))
+      push_team(menu, context: :modules)
       rename(menu, :calendar_view, :"sparkfaktory.menu.calendar")
       rename(menu, :meetings, :"sparkfaktory.menu.meetings")
       rename(menu, :wikis, :"sparkfaktory.menu.documentation")
+    end
+
+    def push_team(menu, **)
+      return if menu.find(:sparkfaktory_team)
+
+      menu.push :sparkfaktory_team,
+                { controller: "/sparkfaktory/team", action: "show" },
+                caption: :"sparkfaktory.menu.team",
+                icon: "organization",
+                after: :projects,
+                if: ->(*) { User.current.logged? },
+                **
     end
 
     def configure_my_tasks(item)

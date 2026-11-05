@@ -27,6 +27,15 @@
 #++
 
 es:
+  activerecord:
+    models:
+      sparkfaktory/org_node: "Posición en el organigrama"
+    attributes:
+      sparkfaktory/org_node:
+        principal: "Persona o equipo"
+        parent: "Depende de"
+        title: "Cargo"
+        position: "Orden"
   plugin_openproject_sparkfaktory:
     name: "Sparkfaktory Proyectos"
     description: "Identidad, navegación simplificada y módulos desactivados para Sparkfaktory Proyectos."
@@ -36,14 +45,15 @@ es:
       calendar: "Calendario"
       meetings: "Reuniones"
       documentation: "Documentación"
+      team: "Equipo"
     queries:
       my_tasks: "Mis tareas"
       unassigned: "Sin asignar"
       due_soon: "Próximas a vencer"
       blocked: "Bloqueadas"
     roles:
-      admin: "Administrador"
-      leader: "Líder"
+      boss: "Jefe"
+      leader: "Project Líder"
       member: "Miembro"
     project_custom_fields:
       start_date: "Fecha de inicio"
@@ -78,3 +88,53 @@ es:
           zero: "Sin tareas vencidas"
           one: "1 tarea vencida"
           other: "%{count} tareas vencidas"
+    specialties:
+      name: "Especialidad"
+      options:
+        backend: "Backend"
+        frontend: "Frontend"
+        design: "Diseño"
+    team:
+      title: "Equipo"
+      description: "Quién dirige a quién y qué puede hacer cada rol."
+      tabs:
+        chart: "Organigrama"
+        roles: "Roles y permisos"
+      add: "Añadir al organigrama"
+      add_below: "Añadir debajo"
+      actions: "Acciones"
+      remove: "Quitar del organigrama"
+      remove_confirm: "Se quita del organigrama (la persona o el equipo no se borra). Lo que tenga debajo sube un nivel. ¿Continuar?"
+      team_prefix: "Equipo"
+      led_by: "Lo lideran %{names}"
+      leader_label: "Líder"
+      no_members: "Este equipo todavía no tiene miembros."
+      unplaced: "Equipos sin ubicar en el organigrama"
+      place: "Ubicar"
+      empty: "Todavía no hay organigrama"
+      empty_admin: "Empieza añadiendo al jefe y después a los líderes y los equipos debajo."
+      empty_user: "Un administrador todavía no ha creado el organigrama."
+      form:
+        heading_new: "Añadir al organigrama"
+        heading_edit: "Editar posición en el organigrama"
+        principal: "Persona o equipo"
+        principal_caption: "Los equipos son los grupos de Administración → Grupos; sus miembros se muestran automáticamente. Un equipo puede ponerse debajo de varios líderes."
+        title: "Cargo"
+        title_caption: "Por ejemplo: Jefe, Project Líder. Si se deja vacío se muestra el nombre."
+        parent: "Depende de"
+        no_parent: "Nadie (nivel superior)"
+        position: "Orden entre hermanos"
+      roles:
+        admins_note: "Los administradores de la instancia (Administración → Usuarios) pueden hacer todo en todos los proyectos, sea cual sea su rol. Los roles se asignan por proyecto en Miembros."
+        transitions: "Puede mover tareas a"
+        permissions: "Permisos principales"
+        from_any: "desde cualquier estado"
+        from: "solo desde %{statuses}"
+        never: "no puede"
+        edit_workflows: "Cambiar el flujo de trabajo"
+        edit_roles: "Cambiar los permisos de los roles"
+        edit_specialties: "Cambiar las especialidades"
+        descriptions:
+          boss: "Autorizado a todo dentro del proyecto: configuración, miembros, tareas y archivado."
+          leader: "Dirige el proyecto y su equipo: gestiona miembros y tareas, aprueba las tareas en revisión (las pasa a Completada o las devuelve) y puede reabrirlas."
+          member: "Trabaja en las tareas: las crea, las mueve hasta «En revisión» y comenta. No puede marcar tareas como completadas ni sacarlas de revisión."

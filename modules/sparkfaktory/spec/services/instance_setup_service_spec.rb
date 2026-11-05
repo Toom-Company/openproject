@@ -24,12 +24,66 @@ RSpec.describe Sparkfaktory::InstanceSetupService do
   it "creates the leader role without instance-level permissions and marks the template" do
     call
 
-    leader = ProjectRole.find_by(name: "Líder")
+    leader = ProjectRole.find_by(name: "Project Líder")
     expect(leader.permissions).to include(:manage_members)
     expect(leader.permissions).not_to include(:archive_project)
-    expect(admin_role.reload.name).to eq "Administrador"
+    expect(admin_role.reload.name).to eq "Jefe"
+    expect(Setting.new_project_user_role_id.to_i).to eq leader.id
     expect(template.reload).to be_templated
     expect(Setting.plugin_openproject_sparkfaktory["blocked_status_id"]).to eq status.id
+  end
+
+  context "with every transition open to every role" do
+    let(:type) { create(:type_task) }
+    let(:todo) { create(:status, name: "Pendiente", is_default: true) }
+    let(:review) { create(:status, name: "En revisión") }
+    let(:done) { create(:status, name: "Completada", is_closed: true) }
+    let!(:member_role) { create(:project_role, name: "Member") }
+    let(:statuses) { [todo, status, review, done] }
+
+    before do
+      [member_role, admin_role].each do |role|
+        statuses.permutation(2).each { |from, to| create(:workflow, role:, type:, old_status: from, new_status: to) }
+      end
+    end
+
+    def targets(role, from)
+      Workflow.where(role:, old_status: from).pluck(:new_status_id)
+    end
+
+    it "lets members move tasks up to review and leaves approval to leaders" do
+      call
+      leader = ProjectRole.find_by(name: "Project Líder")
+
+      expect(member_role.reload.name).to eq "Miembro"
+      expect(targets(member_role, todo)).to contain_exactly(status.id, review.id)
+      expect(targets(member_role, review)).to be_empty
+      expect(targets(member_role, done)).to be_empty
+      expect(targets(leader, review)).to contain_exactly(todo.id, status.id, done.id)
+      expect(targets(admin_role, done)).to contain_exactly(todo.id, status.id, review.id)
+    end
+
+    it "restricts only once so later workflow changes survive" do
+      call
+      create(:workflow, role: member_role, type:, old_status: review, new_status: done)
+
+      described_class.new.call
+      expect(targets(member_role, review)).to eq [done.id]
+    end
+  end
+
+  it "creates the multi-value specialty field for users" do
+    call
+    field = UserCustomField.find(Setting.plugin_openproject_sparkfaktory["specialty_field_id"])
+
+    expect(field.name).to eq "Especialidad"
+    expect(field).to be_multi_value
+    expect(field.possible_values.map(&:value)).to eq %w[Backend Frontend Diseño]
+
+    user = create(:user)
+    user.custom_field_values = { field.id => field.custom_options.first(2).map(&:id) }
+    user.save!
+    expect(Sparkfaktory::Specialties.for(user.reload)).to contain_exactly("Backend", "Frontend")
   end
 
   it "adds project start and end dates as project attributes" do

@@ -1,0 +1,60 @@
+<%#-- copyright
+OpenProject is an open source project management software.
+Copyright (C) the OpenProject GmbH
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License version 3.
+
+OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
+Copyright (C) 2006-2013 Jean-Philippe Lang
+Copyright (C) 2010-2013 the ChiliProject Team
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+See COPYRIGHT and LICENSE files for more details.
+
+++#%>
+
+<% html_title t("sparkfaktory.team.title") %>
+
+<% content_for :content_header do %>
+  <%=
+    render(Primer::OpenProject::PageHeader.new) do |header|
+      header.with_title { t("sparkfaktory.team.title") }
+      header.with_description { t("sparkfaktory.team.description") }
+      header.with_breadcrumbs([t("sparkfaktory.team.title")])
+
+      if current_user.admin? && selected == :chart
+        header.with_action_button(
+          tag: :a, href: new_sparkfaktory_org_node_path, scheme: :primary,
+          mobile_icon: :plus, mobile_label: t("sparkfaktory.team.add"),
+          test_selector: "sf-org-add"
+        ) do |button|
+          button.with_leading_visual_icon(icon: :plus)
+          t("sparkfaktory.team.add")
+        end
+      end
+
+      header.with_tab_nav(label: nil) do |tab_nav|
+        tab_nav.with_tab(selected: selected == :chart, href: sparkfaktory_team_path) do |tab|
+          tab.with_text { t("sparkfaktory.team.tabs.chart") }
+        end
+        tab_nav.with_tab(selected: selected == :roles, href: sparkfaktory_team_roles_path) do |tab|
+          tab.with_text { t("sparkfaktory.team.tabs.roles") }
+        end
+      end
+    end
+  %>
+<% end %>

@@ -1,0 +1,106 @@
+<%#-- copyright
+OpenProject is an open source project management software.
+Copyright (C) the OpenProject GmbH
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License version 3.
+
+OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
+Copyright (C) 2006-2013 Jean-Philippe Lang
+Copyright (C) 2010-2013 the ChiliProject Team
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+See COPYRIGHT and LICENSE files for more details.
+
+++#%>
+
+<% principal = node.principal %>
+<% children = node.preloaded_children %>
+<li class="sf-org-chart--node">
+  <div class="sf-org-card sf-org-card_depth-<%= [depth, 2].min %>" data-test-selector="sf-org-node-<%= node.id %>">
+    <div class="sf-org-card--header">
+      <span><%= node.title.presence || (node.group? ? t("sparkfaktory.team.team_prefix") : principal.name) %></span>
+      <% if current_user.admin? %>
+        <%=
+          render(Primer::Alpha::ActionMenu.new(anchor_align: :end)) do |menu|
+            menu.with_show_button(
+              icon: "kebab-horizontal", scheme: :invisible, size: :small,
+              classes: "sf-org-card--menu", "aria-label": t("sparkfaktory.team.actions")
+            )
+            menu.with_item(label: t("sparkfaktory.team.add_below"), href: new_sparkfaktory_org_node_path(parent_id: node.id)) do |item|
+              item.with_leading_visual_icon(icon: :plus)
+            end
+            menu.with_item(label: t(:button_edit), href: edit_sparkfaktory_org_node_path(node)) do |item|
+              item.with_leading_visual_icon(icon: :pencil)
+            end
+            menu.with_item(
+              label: t("sparkfaktory.team.remove"), scheme: :danger,
+              href: sparkfaktory_org_node_path(node),
+              form_arguments: { method: :delete,
+                                data: { turbo_confirm: t("sparkfaktory.team.remove_confirm") } }
+            ) do |item|
+              item.with_leading_visual_icon(icon: :trash)
+            end
+          end
+        %>
+      <% end %>
+    </div>
+
+    <div class="sf-org-card--body">
+      <% if node.group? %>
+        <strong class="sf-org-card--name"><%= principal.name %></strong>
+        <% if node.leaders.size > 1 %>
+          <p class="sf-org-card--muted" data-test-selector="sf-org-leaders">
+            <%= t("sparkfaktory.team.led_by", names: node.leaders.map(&:name).to_sentence) %>
+          </p>
+        <% end %>
+        <% members = principal.users.active.order(:firstname, :lastname).to_a %>
+        <% if members.empty? %>
+          <p class="sf-org-card--muted"><%= t("sparkfaktory.team.no_members") %></p>
+        <% else %>
+          <ul class="sf-org-card--members">
+            <% members.each do |user| %>
+              <li>
+                <%= avatar(user, size: :mini) %>
+                <%= link_to user.name, user_path(user) %>
+                <% if node.leaders.include?(user) %>
+                  <%= render(Primer::Beta::Label.new(scheme: :success)) { t("sparkfaktory.team.leader_label") } %>
+                <% end %>
+                <%= render "sparkfaktory/team/specialties", user: %>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+      <% else %>
+        <div class="sf-org-card--person">
+          <%= avatar(principal, size: :medium, hide_name: true) %>
+          <div>
+            <strong class="sf-org-card--name"><%= link_to principal.name, user_path(principal) %></strong>
+            <%= render "sparkfaktory/team/specialties", user: principal %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <% if children.any? %>
+    <ul class="sf-org-chart--level">
+      <% children.each do |child| %>
+        <%= render "sparkfaktory/team/node", node: child, depth: depth + 1 %>
+      <% end %>
+    </ul>
+  <% end %>
+</li>

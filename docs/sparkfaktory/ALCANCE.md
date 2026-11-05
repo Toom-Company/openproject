@@ -22,7 +22,9 @@ vistas nativos.
 | Nombre, descripción, estado general | Campos nativos del proyecto |
 | Fechas del proyecto | Atributos de proyecto «Fecha de inicio» y «Fecha de fin» (tipo fecha, para todos los proyectos) |
 | Equipos | Grupos nativos añadidos como miembros del proyecto |
-| Roles por proyecto | Roles **Administrador**, **Líder** y **Miembro** (más los internos No miembro y Anónimo) |
+| Organigrama | Sección **Equipo** del menú principal: jerarquía de personas y equipos (grupos) con cargo; los miembros de cada equipo se leen en vivo del grupo |
+| Especialidades | Campo de usuario «Especialidad» de selección múltiple (Backend, Frontend, Diseño; ampliable en Administración → Campos personalizados) |
+| Roles por proyecto | Roles **Jefe**, **Project Líder** y **Miembro** (más los internos No miembro y Anónimo) |
 | Plantillas | Proyecto plantilla «Plantilla: proyecto estándar», con Kanban, vistas, wiki, tareas de ejemplo y reunión semanal |
 | Panel del proyecto | Resumen con descripción, estado, **widget de tareas** (por estado, por responsable, vencidas y próximas), reuniones, miembros, subproyectos y atributos |
 | Tareas y subtareas | Paquetes de trabajo de tipo «Tarea» (y «Hito»), con jerarquía |
@@ -51,22 +53,38 @@ vistas nativos.
 | Completada | **sí** | |
 
 Solo «Completada» cuenta como trabajo terminado. Los estados se siguen configurando en
-Administración → Tareas → Estados. Los flujos de trabajo permiten todas las transiciones a los
-roles Miembro, Líder y Administrador, y se pueden restringir por rol en Administración → Flujo
-de trabajo. Al mover una tarjeta en el Kanban se cambia el estado por la API, que valida el
-flujo y los permisos en el servidor.
+Administración → Tareas → Estados. Flujo de trabajo inicial por rol:
+
+| Rol | Puede mover a | No puede |
+|---|---|---|
+| Miembro | Pendiente, En progreso, Bloqueada y En revisión (desde los estados abiertos anteriores a revisión) | pasar a Completada, sacar una tarea de «En revisión» ni reabrir una completada |
+| Project Líder | cualquier estado | — |
+| Jefe | cualquier estado | — |
+
+Se aplica una sola vez (versión 2 de `sparkfaktory:setup`); los cambios posteriores en
+Administración → Tipos → Flujo de trabajo se respetan. Los **administradores de la instancia** reciben
+todos los roles y por tanto todas las transiciones. Al mover una tarjeta en el Kanban se cambia el
+estado por la API, que valida el flujo y los permisos en el servidor. La pestaña **Equipo → Roles y
+permisos** muestra el resumen vigente, calculado a partir de la configuración real.
 
 ### Roles
 
-- **Administrador** (de proyecto): todos los permisos del proyecto. Es el rol que recibe quien crea un proyecto.
-- **Líder**: igual que Administrador, salvo archivar el proyecto, elegir módulos y gestionar tipos y campos personalizados.
+- **Jefe** (de proyecto): todos los permisos del proyecto.
+- **Project Líder**: igual que Jefe, salvo archivar el proyecto, elegir módulos y gestionar tipos y
+  campos personalizados. Aprueba las tareas en revisión. Es el rol que recibe quien crea un proyecto.
 - **Miembro**: crea y actualiza tareas, comenta, adjunta, usa tableros, calendario, reuniones y wiki.
+  Lleva las tareas hasta «En revisión».
+- Las **especialidades** (Backend, Frontend, Diseño…) no son roles: son un campo del usuario que
+  aparece en el organigrama y no cambia permisos.
+- Las **especialidades** (Backend, Frontend, Diseño…) no dan permisos: son etiquetas del usuario que
+  se editan en Administración → Usuarios y se ven en el organigrama. Las opciones se cambian en
+  Administración → Campos personalizados → Usuarios → Especialidad.
 - Los **administradores de la instancia** (`admin = true`) gestionan usuarios, grupos, roles,
-  estados, flujos, SMTP y la configuración general.
+  estados, flujos, el organigrama, SMTP y la configuración general.
 
 ## Navegación
 
-Navegación principal: **Inicio · Mis tareas · Proyectos · Calendario · Reuniones · Documentación ·
+Navegación principal: **Inicio · Mis tareas · Proyectos · Equipo · Calendario · Reuniones · Documentación ·
 Administración** (la última solo para administradores).
 
 - *Calendario* y *Documentación* son índices globales de los calendarios y las wikis de los

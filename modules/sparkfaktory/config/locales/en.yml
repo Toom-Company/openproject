@@ -27,6 +27,15 @@
 #++
 
 en:
+  activerecord:
+    models:
+      sparkfaktory/org_node: "Org chart position"
+    attributes:
+      sparkfaktory/org_node:
+        principal: "Person or team"
+        parent: "Reports to"
+        title: "Position title"
+        position: "Order"
   plugin_openproject_sparkfaktory:
     name: "Sparkfaktory Proyectos"
     description: "Branding, simplified navigation and disabled modules for Sparkfaktory Proyectos."
@@ -36,14 +45,15 @@ en:
       calendar: "Calendar"
       meetings: "Meetings"
       documentation: "Documentation"
+      team: "Team"
     queries:
       my_tasks: "My tasks"
       unassigned: "Unassigned"
       due_soon: "Due soon"
       blocked: "Blocked"
     roles:
-      admin: "Administrator"
-      leader: "Leader"
+      boss: "Head"
+      leader: "Project lead"
       member: "Member"
     project_custom_fields:
       start_date: "Start date"
@@ -78,3 +88,53 @@ en:
           zero: "No overdue tasks"
           one: "1 overdue task"
           other: "%{count} overdue tasks"
+    specialties:
+      name: "Specialty"
+      options:
+        backend: "Backend"
+        frontend: "Frontend"
+        design: "Design"
+    team:
+      title: "Team"
+      description: "Who leads whom and what each role may do."
+      tabs:
+        chart: "Org chart"
+        roles: "Roles and permissions"
+      add: "Add to org chart"
+      add_below: "Add below"
+      actions: "Actions"
+      remove: "Remove from org chart"
+      remove_confirm: "This removes it from the chart (the person or team is not deleted). Anything below moves up one level. Continue?"
+      team_prefix: "Team"
+      led_by: "Led by %{names}"
+      leader_label: "Lead"
+      no_members: "This team has no members yet."
+      unplaced: "Teams not placed in the org chart"
+      place: "Place"
+      empty: "No org chart yet"
+      empty_admin: "Start by adding the head, then the leads and the teams below them."
+      empty_user: "An administrator has not created the org chart yet."
+      form:
+        heading_new: "Add to org chart"
+        heading_edit: "Edit org chart position"
+        principal: "Person or team"
+        principal_caption: "Teams are the groups from Administration → Groups; their members are shown automatically."
+        title: "Position title"
+        title_caption: "For example: Head, Project lead. Leave empty to show the name."
+        parent: "Reports to"
+        no_parent: "Nobody (top level)"
+        position: "Order among siblings"
+      roles:
+        admins_note: "Instance administrators (Administration → Users) may do everything in every project, whatever their role. Roles are assigned per project under Members."
+        transitions: "May move tasks to"
+        permissions: "Main permissions"
+        from_any: "from any status"
+        from: "only from %{statuses}"
+        never: "not allowed"
+        edit_workflows: "Change the workflow"
+        edit_roles: "Change role permissions"
+        edit_specialties: "Change specialties"
+        descriptions:
+          boss: "Authorized for everything in the project: settings, members, tasks and archiving."
+          leader: "Leads the project and its team: manages members and tasks, approves tasks in review (completes them or sends them back) and may reopen them."
+          member: "Works on tasks: creates them, moves them up to “In review” and comments. Cannot complete tasks or take them out of review."

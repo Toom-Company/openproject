@@ -1,0 +1,73 @@
+<%#-- copyright
+OpenProject is an open source project management software.
+Copyright (C) the OpenProject GmbH
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License version 3.
+
+OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
+Copyright (C) 2006-2013 Jean-Philippe Lang
+Copyright (C) 2010-2013 the ChiliProject Team
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+See COPYRIGHT and LICENSE files for more details.
+
+++#%>
+
+<%= render "sparkfaktory/team/header", selected: :chart %>
+
+<% if @roots.empty? %>
+  <%=
+    render(Primer::Beta::Blankslate.new(border: true, test_selector: "sf-org-empty")) do |component|
+      component.with_visual_icon(icon: :organization)
+      component.with_heading(tag: :h2).with_content(t("sparkfaktory.team.empty"))
+      component.with_description { t(current_user.admin? ? "sparkfaktory.team.empty_admin" : "sparkfaktory.team.empty_user") }
+    end
+  %>
+<% else %>
+  <div class="sf-org-chart" data-test-selector="sf-org-chart">
+    <ul class="sf-org-chart--level">
+      <% @roots.each do |node| %>
+        <%= render "sparkfaktory/team/node", node:, depth: 0 %>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<% if @unplaced_groups.present? %>
+  <%=
+    render(Primer::Beta::BorderBox.new(mt: 4, test_selector: "sf-org-unplaced")) do |box|
+      box.with_header { t("sparkfaktory.team.unplaced") }
+      @unplaced_groups.each do |group|
+        box.with_row do
+          flex_layout(justify_content: :space_between, align_items: :center) do |row|
+            row.with_column { group.name }
+            row.with_column do
+              render(
+                Primer::Beta::Button.new(
+                  tag: :a, size: :small,
+                  href: new_sparkfaktory_org_node_path(principal_id: group.id)
+                )
+              ) do
+                t("sparkfaktory.team.place")
+              end
+            end
+          end
+        end
+      end
+    end
+  %>
+<% end %>

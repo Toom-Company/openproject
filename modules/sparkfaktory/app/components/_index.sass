@@ -75,3 +75,154 @@
   &--label
     color: var(--fgColor-muted)
     font-size: 0.875rem
+
+.sf-org-chart
+  overflow-x: auto
+  padding: 0.5rem 0 1rem
+
+  &--level
+    display: flex
+    justify-content: center
+    list-style: none
+    margin: 0
+    padding: 1.5rem 0 0
+    position: relative
+
+    .sf-org-chart > &
+      padding-top: 0
+      min-width: max-content
+      margin: 0 auto
+
+    // vertical connector from the parent card down to the children rail
+    .sf-org-chart--node > &::before
+      content: ""
+      position: absolute
+      top: 0
+      left: 50%
+      height: 1.5rem
+      border-left: 1px solid var(--borderColor-default)
+
+  &--node
+    display: flex
+    flex-direction: column
+    align-items: center
+    position: relative
+    padding: 1.5rem 0.75rem 0
+
+    .sf-org-chart > .sf-org-chart--level > &
+      padding-top: 0
+
+    // horizontal rail and the short drop into each card
+    &::before,
+    &::after
+      content: ""
+      position: absolute
+      top: 0
+      width: 50%
+      height: 1.5rem
+      border-top: 1px solid var(--borderColor-default)
+    &::before
+      right: 50%
+    &::after
+      left: 50%
+      border-left: 1px solid var(--borderColor-default)
+    &:first-child::before,
+    &:last-child::after
+      border-top: 0
+    &:only-child::before
+      display: none
+    &:only-child::after
+      border-top: 0
+    .sf-org-chart > .sf-org-chart--level > &::before,
+    .sf-org-chart > .sf-org-chart--level > &::after
+      display: none
+
+.sf-org-card
+  width: 16rem
+  border: 1px solid var(--borderColor-default)
+  border-radius: var(--borderRadius-medium, 6px)
+  background: var(--bgColor-default)
+  box-shadow: var(--shadow-resting-small)
+  overflow: hidden
+
+  &--header
+    display: flex
+    align-items: center
+    justify-content: center
+    position: relative
+    min-height: 2.5rem
+    padding: 0.4rem 2.25rem
+    font-weight: 600
+    text-align: center
+    color: var(--fgColor-onEmphasis)
+    background: var(--bgColor-accent-emphasis)
+
+  &_depth-0 &--header
+    background: var(--bgColor-neutral-emphasis)
+  &_depth-2 &--header
+    background: var(--bgColor-success-emphasis)
+
+  &--menu
+    position: absolute
+    right: 0.25rem
+    top: 50%
+    transform: translateY(-50%)
+    &,
+    .Button-visual
+      color: var(--fgColor-onEmphasis) !important
+      fill: currentColor
+
+  &--body
+    padding: 0.75rem
+
+  &--person
+    display: flex
+    align-items: center
+    gap: 0.75rem
+
+  &--name
+    display: block
+    margin-bottom: 0.25rem
+
+  &--muted
+    margin: 0
+    color: var(--fgColor-muted)
+
+  &--members
+    list-style: none
+    margin: 0.5rem 0 0
+    padding: 0
+    display: grid
+    gap: 0.4rem
+    li
+      display: flex
+      flex-wrap: wrap
+      align-items: center
+      gap: 0.35rem
+
+  &--specialties
+    display: inline-flex
+    flex-wrap: wrap
+    gap: 0.25rem
+
+.sf-role-transitions,
+.sf-role-permissions
+  list-style: none
+  margin: 0
+  padding: 0
+  display: grid
+  gap: 0.35rem
+
+.sf-role-transitions--item
+  display: flex
+  flex-wrap: wrap
+  align-items: center
+  gap: 0.5rem
+
+.sf-role-transitions--detail,
+.sf-role-transitions--item_denied,
+.sf-role-permissions--denied
+  color: var(--fgColor-muted)
+
+.sf-role-permissions
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr))
