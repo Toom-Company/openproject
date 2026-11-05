@@ -39,6 +39,7 @@ module Sparkfaktory
       @roots = Sparkfaktory::OrgNode.tree
       @unplaced_groups = unplaced_groups if current_user.admin?
       @specialty_field = Sparkfaktory::Specialties.field
+      @open_task_counts = open_task_counts
       render locals: { menu_name: :global_menu }
     end
 
@@ -48,6 +49,12 @@ module Sparkfaktory
     end
 
     private
+
+    # Company-wide on purpose: "active" must read the same for every viewer.
+    def open_task_counts
+      WorkPackage.joins(:status).where(statuses: { is_closed: false })
+                 .where.not(assigned_to_id: nil).group(:assigned_to_id).count
+    end
 
     def unplaced_groups
       Group.where.not(id: Sparkfaktory::OrgNode.select(:principal_id)).order(:lastname)

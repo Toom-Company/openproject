@@ -106,6 +106,10 @@ es:
       remove: "Quitar del organigrama"
       remove_confirm: "Se quita del organigrama (la persona o el equipo no se borra). Lo que tenga debajo sube un nivel. ¿Continuar?"
       team_prefix: "Equipo"
+      active:
+        one: "Activo · 1 tarea abierta"
+        other: "Activo · %{count} tareas abiertas"
+      inactive: "Sin tareas abiertas"
       specialties: "Especialidades"
       led_by: "Lo lideran %{names}"
       leader_label: "Líder"

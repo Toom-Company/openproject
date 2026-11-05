@@ -138,7 +138,7 @@
       display: none
 
 .sf-org-card
-  width: 16rem
+  width: 19rem
   border: 1px solid var(--borderColor-default)
   border-radius: var(--borderRadius-medium, 6px)
   background: var(--bgColor-default)
@@ -175,10 +175,6 @@
   &--body
     padding: 0.75rem
 
-  &--person
-    display: flex
-    align-items: center
-    gap: 0.75rem
 
   &--name
     display: block
@@ -194,11 +190,9 @@
     padding: 0
     display: grid
     gap: 0.4rem
-    li
-      display: flex
-      flex-wrap: wrap
-      align-items: center
-      gap: 0.35rem
+    li + li
+      padding-top: 0.4rem
+      border-top: 1px solid var(--borderColor-muted)
 
   &--specialties
     display: inline-flex
@@ -226,3 +220,44 @@
 
 .sf-role-permissions
   grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr))
+
+.sf-person
+  display: flex
+  align-items: flex-start
+  gap: 0.6rem
+  min-width: 0
+
+  &--info
+    display: flex
+    flex-direction: column
+    gap: 0.15rem
+    min-width: 0
+
+  &--name
+    display: flex
+    flex-wrap: wrap
+    align-items: center
+    gap: 0.35rem
+
+  &--mail
+    font-size: 0.85em
+    color: var(--fgColor-muted)
+    overflow-wrap: anywhere
+
+  &--status
+    display: inline-flex
+    align-items: center
+    gap: 0.35rem
+    font-size: 0.85em
+    color: var(--fgColor-muted)
+    &::before
+      content: ""
+      width: 0.5rem
+      height: 0.5rem
+      border-radius: 50%
+      background: var(--fgColor-muted)
+
+  &--status_active
+    color: var(--fgColor-success)
+    &::before
+      background: var(--fgColor-success)

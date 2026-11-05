@@ -29,6 +29,22 @@ RSpec.describe "Team org chart and roles", :skip_csrf, type: :rails_request do
       expect(page).to have_no_css("[data-test-selector='sf-org-unplaced']")
     end
 
+    it "shows each person's email and whether they have open tasks" do
+      open_status = create(:status)
+      closed_status = create(:closed_status)
+      project = create(:project)
+      create_list(:work_package, 2, project:, status: open_status, assigned_to: developer)
+      create(:work_package, project:, status: closed_status, assigned_to: lead)
+
+      get sparkfaktory_team_path
+      page = Capybara.string(response.body)
+
+      developer_card = page.find("[data-test-selector='sf-person-#{developer.id}']")
+      expect(developer_card).to have_link(developer.mail, href: "mailto:#{developer.mail}")
+      expect(developer_card).to have_css(".sf-person--status_active", text: "Activo · 2 tareas abiertas")
+      expect(page.find("[data-test-selector='sf-person-#{lead.id}']")).to have_text("Sin tareas abiertas")
+    end
+
     it "does not let a non admin change the chart" do
       post sparkfaktory_org_nodes_path, params: { org_node: { principal_id: member.id } }
       expect(response).to have_http_status(:forbidden)

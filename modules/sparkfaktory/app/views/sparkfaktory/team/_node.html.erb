@@ -77,24 +77,13 @@ See COPYRIGHT and LICENSE files for more details.
           <ul class="sf-org-card--members">
             <% members.each do |user| %>
               <li>
-                <%= avatar(user, size: :mini) %>
-                <%= link_to user.name, user_path(user) %>
-                <% if node.leaders.include?(user) %>
-                  <%= render(Primer::Beta::Label.new(scheme: :success)) { t("sparkfaktory.team.leader_label") } %>
-                <% end %>
-                <%= render "sparkfaktory/team/specialties", user: %>
+                <%= render "sparkfaktory/team/person", user:, size: :mini, leader: node.leaders.include?(user) %>
               </li>
             <% end %>
           </ul>
         <% end %>
       <% else %>
-        <div class="sf-org-card--person">
-          <%= avatar(principal, size: :medium, hide_name: true) %>
-          <div>
-            <strong class="sf-org-card--name"><%= link_to principal.name, user_path(principal) %></strong>
-            <%= render "sparkfaktory/team/specialties", user: principal %>
-          </div>
-        </div>
+        <%= render "sparkfaktory/team/person", user: principal, size: :medium, leader: false %>
       <% end %>
     </div>
   </div>

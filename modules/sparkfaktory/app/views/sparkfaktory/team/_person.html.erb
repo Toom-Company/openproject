@@ -1,0 +1,53 @@
+<%#-- copyright
+OpenProject is an open source project management software.
+Copyright (C) the OpenProject GmbH
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License version 3.
+
+OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
+Copyright (C) 2006-2013 Jean-Philippe Lang
+Copyright (C) 2010-2013 the ChiliProject Team
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+See COPYRIGHT and LICENSE files for more details.
+
+++#%>
+
+<% open_tasks = @open_task_counts.fetch(user.id, 0) %>
+<div class="sf-person" data-test-selector="sf-person-<%= user.id %>">
+  <%= avatar(user, size: size) %>
+  <div class="sf-person--info">
+    <div class="sf-person--name">
+      <%= link_to user.name, user_path(user), class: ("sf-org-card--name" if size == :medium) %>
+      <% if leader %>
+        <%= render(Primer::Beta::Label.new(scheme: :success)) { t("sparkfaktory.team.leader_label") } %>
+      <% end %>
+    </div>
+    <% if user.mail.present? %>
+      <%= mail_to user.mail, user.mail, class: "sf-person--mail" %>
+    <% end %>
+    <span class="sf-person--status <%= open_tasks.positive? ? "sf-person--status_active" : "" %>"
+          data-test-selector="sf-person-status">
+      <% if open_tasks.positive? %>
+        <%= t("sparkfaktory.team.active", count: open_tasks) %>
+      <% else %>
+        <%= t("sparkfaktory.team.inactive") %>
+      <% end %>
+    </span>
+    <%= render "sparkfaktory/team/specialties", user: %>
+  </div>
+</div>
