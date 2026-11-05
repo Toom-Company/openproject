@@ -146,3 +146,12 @@ en:
           boss: "Authorized for everything in the project: settings, members, tasks and archiving."
           leader: "Leads the project and its team: manages members and tasks, approves tasks in review (completes them or sends them back) and may reopen them."
           member: "Works on tasks: creates them, moves them up to “In review” and comments. Cannot complete tasks or take them out of review."
+  js:
+    work_packages:
+      default_queries:
+        my_tasks: "My tasks"
+        my_overdue: "My overdue tasks"
+        unassigned: "Unassigned"
+        overdue: "Overdue"
+        due_soon: "Due soon"
+        blocked: "Blocked"

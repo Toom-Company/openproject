@@ -28,6 +28,7 @@
 
 require "open_project/plugins"
 require "open_project/sparkfaktory/disabled_routes"
+require "open_project/sparkfaktory/email_obfuscation_opt_out"
 
 module OpenProject::Sparkfaktory
   class Engine < ::Rails::Engine
@@ -42,6 +43,10 @@ module OpenProject::Sparkfaktory
 
     initializer "openproject_sparkfaktory.disabled_routes" do |app|
       app.config.middleware.use OpenProject::Sparkfaktory::DisabledRoutes
+    end
+
+    initializer "openproject_sparkfaktory.email_obfuscation_opt_out" do |app|
+      app.config.middleware.use OpenProject::Sparkfaktory::EmailObfuscationOptOut
     end
 
     config.to_prepare do

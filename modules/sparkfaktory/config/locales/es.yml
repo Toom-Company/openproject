@@ -146,3 +146,12 @@ es:
           boss: "Autorizado a todo dentro del proyecto: configuración, miembros, tareas y archivado."
           leader: "Dirige el proyecto y su equipo: gestiona miembros y tareas, aprueba las tareas en revisión (las pasa a Completada o las devuelve) y puede reabrirlas."
           member: "Trabaja en las tareas: las crea, las mueve hasta «En revisión» y comenta. No puede marcar tareas como completadas ni sacarlas de revisión."
+  js:
+    work_packages:
+      default_queries:
+        my_tasks: "Mis tareas"
+        my_overdue: "Mis tareas vencidas"
+        unassigned: "Sin asignar"
+        overdue: "Vencidas"
+        due_soon: "Próximas a vencer"
+        blocked: "Bloqueadas"
