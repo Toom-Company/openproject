@@ -49,7 +49,8 @@ module OpenProject::Sparkfaktory
       body.close if body.respond_to?(:close)
 
       html = self.class.wrap(html)
-      headers["content-length"] = html.bytesize.to_s if headers.key?("content-length")
+      length_key = header_key(headers, "content-length")
+      headers[length_key] = html.bytesize.to_s if length_key
       [status, headers, [html]]
     end
 
@@ -66,8 +67,12 @@ module OpenProject::Sparkfaktory
     private
 
     def html?(headers)
-      content_type = headers["content-type"].to_s
+      content_type = headers[header_key(headers, "content-type")].to_s
       content_type.start_with?("text/html", "text/vnd.turbo-stream.html")
+    end
+
+    def header_key(headers, name)
+      headers.each_key.find { |key| key.to_s.casecmp?(name) }
     end
   end
 end

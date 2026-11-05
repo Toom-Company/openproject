@@ -30,7 +30,7 @@ require "spec_helper"
 
 RSpec.describe OpenProject::Sparkfaktory::EmailObfuscationOptOut do
   def call(content_type, body)
-    app = ->(_env) { [200, { "content-type" => content_type, "content-length" => body.bytesize.to_s }, [body]] }
+    app = ->(_env) { [200, { "Content-Type" => content_type, "Content-Length" => body.bytesize.to_s }, [body]] }
     described_class.new(app).call({})
   end
 
@@ -40,7 +40,7 @@ RSpec.describe OpenProject::Sparkfaktory::EmailObfuscationOptOut do
 
     expect(body.join).to eq("<!DOCTYPE html><html><body class=\"a\"><!--email_off--><a>x@example.com</a>" \
                             "<!--/email_off--></body></html>")
-    expect(headers["content-length"]).to eq(body.join.bytesize.to_s)
+    expect(headers["Content-Length"]).to eq(body.join.bytesize.to_s)
   end
 
   it "wraps HTML fragments and turbo streams entirely" do
