@@ -108,6 +108,9 @@ es:
       team_prefix: "Equipo"
       led_by: "Lo lideran %{names}"
       leader_label: "Líder"
+      member_count:
+        one: "1 miembro"
+        other: "%{count} miembros"
       no_members: "Este equipo todavía no tiene miembros."
       unplaced: "Equipos sin ubicar en el organigrama"
       place: "Ubicar"

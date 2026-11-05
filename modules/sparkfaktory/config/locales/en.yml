@@ -108,6 +108,9 @@ en:
       team_prefix: "Team"
       led_by: "Led by %{names}"
       leader_label: "Lead"
+      member_count:
+        one: "1 member"
+        other: "%{count} members"
       no_members: "This team has no members yet."
       unplaced: "Teams not placed in the org chart"
       place: "Place"

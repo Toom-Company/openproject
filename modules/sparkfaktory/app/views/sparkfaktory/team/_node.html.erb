@@ -32,7 +32,7 @@ See COPYRIGHT and LICENSE files for more details.
 <li class="sf-org-chart--node">
   <div class="sf-org-card sf-org-card_depth-<%= [depth, 2].min %>" data-test-selector="sf-org-node-<%= node.id %>">
     <div class="sf-org-card--header">
-      <span><%= node.title.presence || (node.group? ? t("sparkfaktory.team.team_prefix") : principal.name) %></span>
+      <span><%= node.title.presence || principal.name %></span>
       <% if current_user.admin? %>
         <%=
           render(Primer::Alpha::ActionMenu.new(anchor_align: :end)) do |menu|
@@ -61,7 +61,9 @@ See COPYRIGHT and LICENSE files for more details.
 
     <div class="sf-org-card--body">
       <% if node.group? %>
-        <strong class="sf-org-card--name"><%= principal.name %></strong>
+        <% if node.title.present? %>
+          <strong class="sf-org-card--name"><%= principal.name %></strong>
+        <% end %>
         <% if node.leaders.size > 1 %>
           <p class="sf-org-card--muted" data-test-selector="sf-org-leaders">
             <%= t("sparkfaktory.team.led_by", names: node.leaders.map(&:name).to_sentence) %>
@@ -71,6 +73,7 @@ See COPYRIGHT and LICENSE files for more details.
         <% if members.empty? %>
           <p class="sf-org-card--muted"><%= t("sparkfaktory.team.no_members") %></p>
         <% else %>
+          <p class="sf-org-card--muted"><%= t("sparkfaktory.team.member_count", count: members.size) %></p>
           <ul class="sf-org-card--members">
             <% members.each do |user| %>
               <li>
