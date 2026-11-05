@@ -39,8 +39,11 @@ RSpec.describe "Team org chart and roles", :skip_csrf, type: :rails_request do
   describe "editing as admin" do
     before { login_as(admin) }
 
-    it "lists teams that are not placed yet" do
+    it "lists teams that are not placed yet and links to the specialty options" do
+      field = create(:user_custom_field, :list, name: "Especialidad")
+      Setting.plugin_openproject_sparkfaktory = { "specialty_field_id" => field.id }
       get sparkfaktory_team_path
+      expect(Capybara.string(response.body)).to have_link(href: edit_custom_field_path(field))
       expect(Capybara.string(response.body)).to have_css("[data-test-selector='sf-org-unplaced']", text: "Spark Dev 2")
     end
 

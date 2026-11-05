@@ -106,6 +106,7 @@ en:
       remove: "Remove from org chart"
       remove_confirm: "This removes it from the chart (the person or team is not deleted). Anything below moves up one level. Continue?"
       team_prefix: "Team"
+      specialties: "Specialties"
       led_by: "Led by %{names}"
       leader_label: "Lead"
       member_count:
