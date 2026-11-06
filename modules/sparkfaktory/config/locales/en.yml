@@ -90,16 +90,22 @@ en:
           other: "%{count} overdue tasks"
     specialties:
       name: "Specialty"
-      options:
-        backend: "Backend"
-        frontend: "Frontend"
-        design: "Design"
+      categories:
+        software_development: "Software Development"
+        it_technology: "IT & Technology"
+        leadership_management: "Leadership & Management"
+        data_ai: "Data & Artificial Intelligence"
+        testing_qa: "Testing & Quality Assurance"
+        ui_ux_design: "UI/UX & Design"
+        emerging_technologies: "Emerging Technologies"
+        other: "Other"
     team:
       title: "Team"
       description: "Who leads whom and what each role may do."
       tabs:
         chart: "Org chart"
         roles: "Roles and permissions"
+        specialties: "Specialties"
       add: "Add to org chart"
       add_below: "Add below"
       actions: "Actions"
@@ -110,13 +116,23 @@ en:
         one: "Active · 1 open task"
         other: "Active · %{count} open tasks"
       inactive: "No open tasks"
-      specialties: "Specialties"
       led_by: "Led by %{names}"
       leader_label: "Lead"
       member_count:
         one: "1 member"
         other: "%{count} members"
       no_members: "This team has no members yet."
+      people:
+        count:
+          one: "1 person"
+          other: "%{count} people"
+        none: "No specialty"
+        edit_options: "Edit the list of options"
+        edit_title: "Job title and specialty of %{name}"
+        job_title: "Job title in the org chart"
+        job_title_caption: "The title shown on their org chart card."
+        no_job_title: "No job title (their name is shown)"
+        specialties_caption: "Tick all that apply."
       unplaced: "Teams not placed in the org chart"
       place: "Place"
       empty: "No org chart yet"

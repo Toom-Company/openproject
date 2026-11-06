@@ -31,7 +31,7 @@ module Sparkfaktory
   # `db:seed` and through `rake sparkfaktory:setup`. Settings are written only on the
   # first run (or with force: true) so later changes made by administrators survive.
   class InstanceSetupService
-    VERSION = 2
+    VERSION = 3
 
     DEFAULT_PROJECT_MODULES = %w[work_package_tracking board_view calendar_view meetings activity].freeze
 
@@ -170,20 +170,19 @@ module Sparkfaktory
     end
 
     def setup_specialties
-      return if UserCustomField.exists?(id: plugin_settings["specialty_field_id"])
-
-      name = I18n.t("sparkfaktory.specialties.name", locale: seed_locale)
-      field = UserCustomField.find_by(name:) || create_specialty_field(name)
+      field = UserCustomField.find_by(id: plugin_settings["specialty_field_id"])
+      field ||= UserCustomField.find_by(name: specialty_field_name) || create_specialty_field(specialty_field_name)
       store_plugin_settings("specialty_field_id" => field.id)
+      Sparkfaktory::Specialties.sync_catalog!(field) if setup_version < 3
+    end
+
+    def specialty_field_name
+      I18n.t("sparkfaktory.specialties.name", locale: seed_locale)
     end
 
     def create_specialty_field(name)
-      options = Sparkfaktory::Specialties::DEFAULT_OPTIONS.map do |key|
-        I18n.t("sparkfaktory.specialties.options.#{key}", locale: seed_locale)
-      end
-
       UserCustomField.create!(name:, field_format: "list", multi_value: true, editable: false, admin_only: false,
-                              is_required: false, possible_values: options,
+                              is_required: false, possible_values: Sparkfaktory::Specialties.titles,
                               custom_field_section: user_custom_field_section)
     end
 

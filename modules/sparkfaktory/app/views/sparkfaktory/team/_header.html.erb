@@ -36,18 +36,6 @@ See COPYRIGHT and LICENSE files for more details.
       header.with_description { t("sparkfaktory.team.description") }
       header.with_breadcrumbs([t("sparkfaktory.team.title")])
 
-      specialty_field = Sparkfaktory::Specialties.field
-      if current_user.admin? && specialty_field
-        header.with_action_button(
-          tag: :a, href: edit_custom_field_path(specialty_field),
-          mobile_icon: :tag, mobile_label: t("sparkfaktory.team.specialties"),
-          test_selector: "sf-specialties-link"
-        ) do |button|
-          button.with_leading_visual_icon(icon: :tag)
-          t("sparkfaktory.team.specialties")
-        end
-      end
-
       if current_user.admin? && selected == :chart
         header.with_action_button(
           tag: :a, href: new_sparkfaktory_org_node_path, scheme: :primary,
@@ -65,6 +53,14 @@ See COPYRIGHT and LICENSE files for more details.
         end
         tab_nav.with_tab(selected: selected == :roles, href: sparkfaktory_team_roles_path) do |tab|
           tab.with_text { t("sparkfaktory.team.tabs.roles") }
+        end
+        if Sparkfaktory::Specialties.field
+          tab_nav.with_tab(
+            selected: selected == :specialties, href: sparkfaktory_specialties_path,
+            test_selector: "sf-specialties-tab"
+          ) do |tab|
+            tab.with_text { t("sparkfaktory.team.tabs.specialties") }
+          end
         end
       end
     end

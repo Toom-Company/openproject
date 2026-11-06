@@ -78,12 +78,29 @@ RSpec.describe Sparkfaktory::InstanceSetupService do
 
     expect(field.name).to eq "Especialidad"
     expect(field).to be_multi_value
-    expect(field.possible_values.map(&:value)).to eq %w[Backend Frontend Diseño]
+    expect(field.possible_values.map(&:value)).to eq Sparkfaktory::Specialties.titles
+    expect(field.possible_values.first(2).map(&:value)).to eq ["Software Developer", "Software Engineer"]
 
     user = create(:user)
     user.custom_field_values = { field.id => field.custom_options.first(2).map(&:id) }
     user.save!
-    expect(Sparkfaktory::Specialties.for(user.reload)).to contain_exactly("Backend", "Frontend")
+    expect(Sparkfaktory::Specialties.for(user.reload)).to contain_exactly("Software Developer", "Software Engineer")
+  end
+
+  it "replaces the old specialty options with the catalog without touching the ones in use" do
+    field = create(:user_custom_field, :list, name: "Especialidad", multi_value: true,
+                                               possible_values: %w[Backend Frontend Diseño])
+    backend = field.custom_options.find_by(value: "Backend")
+    user = create(:user)
+    user.custom_field_values = { field.id => [backend.id] }
+    user.save!
+    Setting.plugin_openproject_sparkfaktory = { "specialty_field_id" => field.id, "setup_version" => 2 }
+
+    call
+
+    values = field.reload.custom_options.order(:position).map(&:value)
+    expect(values).to eq Sparkfaktory::Specialties.titles + ["Backend"]
+    expect(Sparkfaktory::Specialties.for(user.reload)).to eq ["Backend"]
   end
 
   it "adds project start and end dates as project attributes" do

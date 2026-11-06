@@ -32,5 +32,7 @@ Rails.application.routes.draw do
     get "roles", to: "sparkfaktory/team#roles", as: :sparkfaktory_team_roles
     resources :org_nodes, path: "organigrama", controller: "sparkfaktory/org_nodes",
                           as: :sparkfaktory_org_nodes, only: %i[new create edit update destroy]
+    resources :specialties, path: "especialidades", controller: "sparkfaktory/specialties", param: :user_id,
+                            as: :sparkfaktory_specialties, only: %i[index edit update]
   end
 end

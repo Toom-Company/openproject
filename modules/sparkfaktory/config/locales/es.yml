@@ -90,16 +90,22 @@ es:
           other: "%{count} tareas vencidas"
     specialties:
       name: "Especialidad"
-      options:
-        backend: "Backend"
-        frontend: "Frontend"
-        design: "Diseño"
+      categories:
+        software_development: "Desarrollo de software"
+        it_technology: "IT y tecnología"
+        leadership_management: "Liderazgo y gestión"
+        data_ai: "Datos e inteligencia artificial"
+        testing_qa: "Pruebas y control de calidad"
+        ui_ux_design: "UI/UX y diseño"
+        emerging_technologies: "Tecnologías emergentes"
+        other: "Otras"
     team:
       title: "Equipo"
       description: "Quién dirige a quién y qué puede hacer cada rol."
       tabs:
         chart: "Organigrama"
         roles: "Roles y permisos"
+        specialties: "Especialidades"
       add: "Añadir al organigrama"
       add_below: "Añadir debajo"
       actions: "Acciones"
@@ -110,13 +116,23 @@ es:
         one: "Activo · 1 tarea abierta"
         other: "Activo · %{count} tareas abiertas"
       inactive: "Sin tareas abiertas"
-      specialties: "Especialidades"
       led_by: "Lo lideran %{names}"
       leader_label: "Líder"
       member_count:
         one: "1 miembro"
         other: "%{count} miembros"
       no_members: "Este equipo todavía no tiene miembros."
+      people:
+        count:
+          one: "1 persona"
+          other: "%{count} personas"
+        none: "Sin especialidad"
+        edit_options: "Editar la lista de opciones"
+        edit_title: "Cargo y especialidad de %{name}"
+        job_title: "Cargo en el organigrama"
+        job_title_caption: "Es el título que aparece en su tarjeta del organigrama."
+        no_job_title: "Sin cargo (se muestra su nombre)"
+        specialties_caption: "Marca todas las que apliquen."
       unplaced: "Equipos sin ubicar en el organigrama"
       place: "Ubicar"
       empty: "Todavía no hay organigrama"

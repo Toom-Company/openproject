@@ -1,0 +1,73 @@
+<%#-- copyright
+OpenProject is an open source project management software.
+Copyright (C) the OpenProject GmbH
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License version 3.
+
+OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
+Copyright (C) 2006-2013 Jean-Philippe Lang
+Copyright (C) 2010-2013 the ChiliProject Team
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+See COPYRIGHT and LICENSE files for more details.
+
+++#%>
+
+<%= render "sparkfaktory/team/header", selected: :specialties %>
+
+<%= render(Primer::Beta::BorderBox.new(test_selector: "sf-specialties")) do |box| %>
+  <% box.with_header do %>
+    <div class="sf-people--header">
+      <span><%= t("sparkfaktory.team.people.count", count: @users.size) %></span>
+      <% if current_user.admin? %>
+        <%= link_to t("sparkfaktory.team.people.edit_options"), edit_custom_field_path(@field) %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% @users.each do |user| %>
+    <% box.with_row(test_selector: "sf-specialties-#{user.id}") do %>
+      <div class="sf-people--row">
+        <div class="sf-people--person">
+          <%= avatar(user, size: :mini) %>
+          <div>
+            <%= link_to user.name, user_path(user), class: "sf-people--name" %>
+            <% if (title = @nodes[user.id]&.title).present? %>
+              <span class="sf-people--title"><%= title %></span>
+            <% end %>
+          </div>
+        </div>
+        <div class="sf-people--labels">
+          <% specialties = Sparkfaktory::Specialties.for(user, @field) %>
+          <% if specialties.empty? %>
+            <%= render(Primer::Beta::Text.new(color: :subtle)) { t("sparkfaktory.team.people.none") } %>
+          <% else %>
+            <% specialties.each do |name| %>
+              <%= render(Primer::Beta::Label.new(scheme: :accent)) { name } %>
+            <% end %>
+          <% end %>
+        </div>
+        <% if current_user.admin? %>
+          <%= render(Primer::Beta::Button.new(tag: :a, size: :small, href: edit_sparkfaktory_specialty_path(user))) do |button| %>
+            <% button.with_leading_visual_icon(icon: :pencil) %>
+            <%= t(:button_edit) %>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

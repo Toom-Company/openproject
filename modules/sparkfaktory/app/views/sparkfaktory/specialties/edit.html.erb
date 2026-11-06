@@ -1,0 +1,83 @@
+<%#-- copyright
+OpenProject is an open source project management software.
+Copyright (C) the OpenProject GmbH
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License version 3.
+
+OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
+Copyright (C) 2006-2013 Jean-Philippe Lang
+Copyright (C) 2010-2013 the ChiliProject Team
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+See COPYRIGHT and LICENSE files for more details.
+
+++#%>
+
+<% html_title t("sparkfaktory.team.title") %>
+<% heading = t("sparkfaktory.team.people.edit_title", name: @user.name) %>
+<% selected = Sparkfaktory::Specialties.for(@user, @field) %>
+
+<% content_for :content_header do %>
+  <%=
+    render(Primer::OpenProject::PageHeader.new) do |header|
+      header.with_title { heading }
+      header.with_breadcrumbs(
+        [{ href: sparkfaktory_team_path, text: t("sparkfaktory.team.title") },
+         { href: sparkfaktory_specialties_path, text: t("sparkfaktory.team.tabs.specialties") },
+         @user.name]
+      )
+    end
+  %>
+<% end %>
+
+<%= form_with url: sparkfaktory_specialty_path(@user), method: :patch, class: "sf-people--form" do %>
+  <% if @node %>
+    <div class="FormControl sf-people--job-title">
+      <%= label_tag :title, t("sparkfaktory.team.people.job_title"), class: "FormControl-label" %>
+      <% current = @node.title.presence %>
+      <% groups = Sparkfaktory::Specialties.grouped(Sparkfaktory::Specialties.titles | Array(current)) %>
+      <%= select_tag :title,
+                     grouped_options_for_select(groups, current),
+                     include_blank: t("sparkfaktory.team.people.no_job_title"),
+                     class: "FormControl-select FormControl-large" %>
+      <span class="FormControl-caption"><%= t("sparkfaktory.team.people.job_title_caption") %></span>
+    </div>
+  <% end %>
+
+  <%= hidden_field_tag "specialty_ids[]", "", id: nil %>
+  <%= render(Primer::Beta::Heading.new(tag: :h2, font_size: 4, mb: 1)) { Sparkfaktory::Specialties.name } %>
+  <%= render(Primer::Beta::Text.new(tag: :p, color: :muted)) { t("sparkfaktory.team.people.specialties_caption") } %>
+
+  <div class="sf-people--groups">
+    <% Sparkfaktory::Specialties.grouped(@field.custom_options.to_a).each do |label, options| %>
+      <fieldset class="sf-people--group" data-test-selector="sf-specialty-group">
+        <legend><%= label %></legend>
+        <% options.each do |option| %>
+          <label class="sf-people--option">
+            <%= check_box_tag "specialty_ids[]", option.id, selected.include?(option.value), id: "specialty_#{option.id}" %>
+            <%= option.value %>
+          </label>
+        <% end %>
+      </fieldset>
+    <% end %>
+  </div>
+
+  <div class="sf-people--actions">
+    <%= render(Primer::Beta::Button.new(type: :submit, scheme: :primary)) { t(:button_save) } %>
+    <%= render(Primer::Beta::Button.new(tag: :a, href: sparkfaktory_specialties_path)) { t(:button_cancel) } %>
+  </div>
+<% end %>
